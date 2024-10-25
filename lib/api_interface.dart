@@ -181,14 +181,18 @@ class TheOneApi implements ApiInterface {
     });
   }
 
-  Future<String> getCharacterIdByName(String name) {
+Future<String> getCharacterIdByName(String name) {
     if (characterMap.containsKey(name)) {
+      print('Character ID for $name already cached');
       return Future.value(characterMap[name]);
     }
     return get('character?name=$name').then((value) {
-      String characterId = value['docs'][0]['name'];
+      print('Character ID for $name not cached');
+      String characterId = value['docs'][0]['_id'];
       characterMap[name] = characterId;
+      print('Character ID for $name: $characterId');
       return characterId;
     });
   }
+
 }
