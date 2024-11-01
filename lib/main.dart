@@ -41,6 +41,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int _numCorrect = 0;
   int _numTotal = 0;
   bool _checkAnswerEnabled = false;
+  bool _getQuoteEnabled = true;
+  int _numStrikes = 0;
 
   static const List<String> _characterList = [
     'Gollum',
@@ -76,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 34.0),
                 child: FilledButton.tonal(
-                  onPressed: onPressed,
+                  onPressed: getGetQuoteLogic(),
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -139,13 +141,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 getScore(),
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
-              // const Text(
-              //   'You have pushed the button this many times:',
-              // ),
-              // Text(
-              //   '$_counter',
-              //   style: Theme.of(context).textTheme.headlineMedium,
-              // ),
             ],
           ),
         ),
@@ -160,12 +155,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Function()? getCheckAnswerLogic() {
     if (_quote == '' || !_checkAnswerEnabled) {
-      print('Check Answer Disabled');
       return null;
     }
     else {
-      print('Check Answer Enabled');
       return onCheckAnswerPressed;
+    }
+  }
+
+  Function()? getGetQuoteLogic() {
+    if (_getQuoteEnabled) {
+      return onPressed;
+    }
+    else {
+      return null;
     }
   }
 
@@ -176,6 +178,8 @@ class _MyHomePageState extends State<MyHomePage> {
       _answer = '';
       _numCorrect = 0;
       _numTotal = 0;
+      _numStrikes = 0;
+      _getQuoteEnabled = true;
     });
   }
 
@@ -193,9 +197,14 @@ class _MyHomePageState extends State<MyHomePage> {
         _checkAnswerEnabled = false;
         print('Correct');
       } else {
-        _answer = 'Incorrect. The right answer was $_character.';
+        _numStrikes++;
+        _answer = 'Incorrect. The right answer was $_character. You have $_numStrikes strikes.';
         print('Incorrect');
         _checkAnswerEnabled = false;
+        if (_numStrikes >= 3) {
+          _answer = 'Incorrect. The right answer was $_character. You have $_numStrikes strikes.';
+          _getQuoteEnabled = false;
+        }
       }
     });
   }
@@ -235,8 +244,10 @@ class _MyHomePageState extends State<MyHomePage> {
     if (_numTotal == 0) {
       return 'No questions answered yet';
     }
-    var percent = (_numCorrect / _numTotal) * 100;
-    var formattedPercent = percent.toStringAsFixed(2);
-    return '$_numCorrect / $_numTotal ($formattedPercent%)';
+    if (_numStrikes >= 3) {
+      return 'Game Over. Final Score: $_numCorrect';
+    }
+    return 'Current Score: $_numCorrect';
+   
   }
 }
