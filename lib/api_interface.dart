@@ -59,7 +59,7 @@ class TheOneApi implements ApiInterface {
   final String baseUrl = 'https://the-one-api.dev/v2/';
 
   // Get creds from environment variables
-  final String? apiKey = Platform.environment['THE_ONE_API_KEY'];
+  final String? apiKey = "GlazcBx6BVrAB7BSmlsM";// Platform.environment['THE_ONE_API_KEY'];
 
   Map<String, String?> characterMap = {};
 

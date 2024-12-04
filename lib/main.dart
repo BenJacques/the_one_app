@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:the_one_app/character_lists.dart';
 import 'api_interface.dart';
 import 'quote.dart';
 
@@ -43,23 +44,10 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _checkAnswerEnabled = false;
   bool _getQuoteEnabled = true;
   int _numStrikes = 0;
-
-  static const List<String> _characterList = [
-    'Gollum',
-    'Frodo Baggins',
-    'Samwise Gamgee',
-    'Aragorn II Elessar',
-    'Gandalf',
-    'Gimli',
-    'Legolas',
-    'Boromir',
-    'Meriadoc Brandybuck',
-    'Peregrin Took',
-    'Saruman',
-    'Treebeard',
-  ];
+  Difficulty _difficulty = Difficulty.easy;
 
   final _api = TheOneApi();
+
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     _selectedCharacter = newValue;
                   });
                 },
-                items: _characterList
+                items: getCharacterList()
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
@@ -171,6 +159,10 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  List<String> getCharacterList() {
+    return CharacterLists().getCharacterList(_difficulty);
+  }
+
   void resetGame() {
     setState(() {
       _quote = '';
@@ -222,7 +214,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (_character != '') {
       character = _character;
     }
-    _api.getQuoteFromCharacterList(_characterList).onError((error, stackTrace) {
+    _api.getQuoteFromCharacterList(getCharacterList()).onError((error, stackTrace) {
       print('Error getting quote: $error');
       return CharacterQuote(quote: 'Error getting quote', character: 'Error');
     }).then((value) {
