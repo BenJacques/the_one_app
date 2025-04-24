@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:the_one_app/character_lists.dart';
 import 'api_interface.dart';
@@ -11,11 +10,10 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'The One App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,
@@ -48,49 +46,55 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final _api = TheOneApi();
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-
         title: Text(widget.title),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(38.0),
+        padding: const EdgeInsets.all(20.0),
         child: Center(
-
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 34.0),
-                child: FilledButton.tonal(
-                  onPressed: getGetQuoteLogic(),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Icon(Icons.textsms),
-                      Text('Get Quote'),
-                    ],
-                  ),
+              const SizedBox(height: 20),
+              FilledButton.tonal(
+                onPressed: getGetQuoteLogic(),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.textsms),
+                    SizedBox(width: 10),
+                    Text('Get Quote'),
+                  ],
                 ),
               ),
+              const SizedBox(height: 20),
               ConstrainedBox(
                 constraints: const BoxConstraints(maxHeight: 200),
                 child: SingleChildScrollView(
                   child: Text(
-                    _quote,
-                    style: Theme.of(context).textTheme.headlineMedium,
+                    _quote.isEmpty ? 'Press "Get Quote" to start!' : _quote,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontStyle: FontStyle.italic,
+                          color: Colors.teal.shade700,
+                        ),
                   ),
                 ),
               ),
               const Divider(
-                height: 50,
-                thickness: 3,
+                height: 40,
+                thickness: 2,
                 color: Colors.teal,
               ),
-              const Text('Select who said this:'),
+              const Text(
+                'Select who said this:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
               DropdownButton<String>(
                 hint: const Text('Select a character'),
                 value: _selectedCharacter,
@@ -108,26 +112,33 @@ class _MyHomePageState extends State<MyHomePage> {
                 }).toList(),
                 isExpanded: true,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 34.0),
-                child: FilledButton.tonal(
-                  onPressed: getCheckAnswerLogic(),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Icon(Icons.check),
-                      Text('Check Answer'),
-                    ],
-                  ),
+              const SizedBox(height: 20),
+              FilledButton.tonal(
+                onPressed: getCheckAnswerLogic(),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.check),
+                    SizedBox(width: 10),
+                    Text('Check Answer'),
+                  ],
                 ),
               ),
+              const SizedBox(height: 20),
               Text(
                 _answer,
-                style: Theme.of(context).textTheme.headlineMedium,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      color: _answer.contains('Correct')
+                          ? Colors.green
+                          : Colors.red,
+                    ),
               ),
+              const SizedBox(height: 10),
               Text(
                 getScore(),
-                style: Theme.of(context).textTheme.headlineMedium,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
             ],
           ),
@@ -135,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: resetGame,
-        tooltip: 'Increment',
+        tooltip: 'Reset Game',
         child: const Icon(Icons.refresh),
       ),
     );
@@ -144,8 +155,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Function()? getCheckAnswerLogic() {
     if (_quote == '' || !_checkAnswerEnabled) {
       return null;
-    }
-    else {
+    } else {
       return onCheckAnswerPressed;
     }
   }
@@ -153,8 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Function()? getGetQuoteLogic() {
     if (_getQuoteEnabled) {
       return onPressed;
-    }
-    else {
+    } else {
       return null;
     }
   }
@@ -175,26 +184,19 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void onEditingComplete() {
-    print('Editing complete');
-  }
-
   void onCheckAnswerPressed() {
-    print('Check Answer Pressed');
     setState(() {
       _numTotal++;
       if (_character == _selectedCharacter) {
         _numCorrect++;
         _answer = 'Correct!';
         _checkAnswerEnabled = false;
-        print('Correct');
       } else {
         _numStrikes++;
-        _answer = 'Incorrect. The right answer was $_character. You have $_numStrikes strikes.';
-        print('Incorrect');
+        _answer =
+            'Incorrect. The right answer was $_character. You have $_numStrikes strikes.';
         _checkAnswerEnabled = false;
         if (_numStrikes >= 3) {
-          _answer = 'Incorrect. The right answer was $_character. You have $_numStrikes strikes.';
           _getQuoteEnabled = false;
         }
       }
@@ -203,33 +205,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void onPressed() {
     setState(() {
-      // Disable button while waiting for response
       _quote = 'Loading...';
     });
-    print('Pressed');
-    String character = _selectedCharacter ?? '';
-    if (character == 'Random') {
-      character = '';
-    }
-    if (_character != '') {
-      character = _character;
-    }
-    _api.getQuoteFromCharacterList(getCharacterList()).onError((error, stackTrace) {
-      print('Error getting quote: $error');
-      return CharacterQuote(quote: 'Error getting quote', character: 'Error');
-    }).then((value) {
+    _api.getQuoteFromCharacterList(getCharacterList()).then((value) {
       setState(() {
         _character = value.character.toString();
         _quote = value.quote.toString();
         _checkAnswerEnabled = true;
       });
+    }).onError((error, stackTrace) {
+      setState(() {
+        _quote = 'Error getting quote';
+      });
     });
-
-    // _api.get('/quote').then((value) {
-    //   setState(() {
-    //     _quote = value;
-    //   });
-    // });
   }
 
   String getScore() {
@@ -240,6 +228,5 @@ class _MyHomePageState extends State<MyHomePage> {
       return 'Game Over. Final Score: $_numCorrect';
     }
     return 'Current Score: $_numCorrect';
-   
   }
 }
