@@ -2,37 +2,37 @@ enum Difficulty { easy, medium, hard }
 
 class CharacterLists {
   static const List<String> easy = [
-    'Gollum',
-    'Frodo Baggins',
-    'Samwise Gamgee',
     'Aragorn II Elessar',
+    'Boromir',
+    'Frodo Baggins',
     'Gandalf',
     'Gimli',
+    'Gollum',
     'Legolas',
-    'Boromir',
     'Meriadoc Brandybuck',
     'Peregrin Took',
+    'Samwise Gamgee',
     'Saruman',
     'Treebeard',
   ];
 
   static const List<String> medium = [
-    'Galadriel',
-    'Elrond',
-    'Thranduil',
-    'Bilbo Baggins',
-    'Bard the Bowman',
     'Balin',
+    'Bard the Bowman',
+    'Bilbo Baggins',
     'Bifur',
     'Bombur',
     'Dwalin',
+    'Elrond',
     'Fili',
+    'Galadriel',
     'Kili',
     'Oin',
     'Ori',
     'Radagast',
-    'Thror',
     'Thrain',
+    'Thranduil',
+    'Thror',
     'Tom Bombadil',
   ];
 
