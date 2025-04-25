@@ -151,6 +151,11 @@ class TheOneApi implements ApiInterface {
         var numQuotes = value['docs'].length;
         var randomIndex = Random().nextInt(numQuotes);
         var randomQuote = value['docs'][randomIndex];
+        if (randomQuote['dialog'] == '' || randomQuote['dialog'] == null) {
+          // If the quote is empty, get another random quote
+          randomIndex = Random().nextInt(numQuotes);
+          randomQuote = value['docs'][randomIndex];
+        }
         var character = await getCharacterById(randomQuote['character']);
         quote = CharacterQuote(
           quote: randomQuote['dialog'],
@@ -165,6 +170,11 @@ class TheOneApi implements ApiInterface {
         var numQuotes = value['docs'].length;
         var randomIndex = Random().nextInt(numQuotes);
         var randomQuote = value['docs'][randomIndex];
+        if (randomQuote['dialog'] == '' || randomQuote['dialog'] == null) {
+          // If the quote is empty, get another random quote
+          randomIndex = Random().nextInt(numQuotes);
+          randomQuote = value['docs'][randomIndex];
+        }
         quote = CharacterQuote(
           quote: randomQuote['dialog'],
           character: character,
